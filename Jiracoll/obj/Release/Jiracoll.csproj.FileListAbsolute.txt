@@ -18,3 +18,24 @@ D:\repos\jira-cfd-date-collector 2017\Jiracoll\obj\Release\Jiracoll.csproj.CoreC
 D:\repos\jira-cfd-date-collector 2017\Jiracoll\obj\Release\Jiracoll.csproj.CopyComplete
 D:\repos\jira-cfd-date-collector 2017\Jiracoll\obj\Release\Jiracoll.exe
 D:\repos\jira-cfd-date-collector 2017\Jiracoll\obj\Release\Jiracoll.pdb
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Jiracoll.exe.config
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Jiracoll.exe
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Jiracoll.pdb
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Atlassian.Jira.dll
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Newtonsoft.Json.dll
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\RestSharp.dll
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\Newtonsoft.Json.xml
+D:\repos\JiraDataGitHub\Jiracoll\bin\Release\RestSharp.xml
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.csprojAssemblyReference.cache
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\MainWindow.g.cs
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\App.g.cs
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll_MarkupCompile.cache
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll_MarkupCompile.lref
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\MainWindow.baml
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.g.resources
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.Properties.Resources.resources
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.csproj.GenerateResource.cache
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.csproj.CoreCompileInputs.cache
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.csproj.CopyComplete
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.exe
+D:\repos\JiraDataGitHub\Jiracoll\obj\Release\Jiracoll.pdb

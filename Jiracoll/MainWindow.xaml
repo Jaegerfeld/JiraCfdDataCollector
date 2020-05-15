@@ -12,12 +12,12 @@
             <ColumnDefinition Width="56*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="Button_StartCollect" Content="Start" HorizontalAlignment="Left" Margin="17.049,251,0,0" VerticalAlignment="Top" Width="263" Height="96" Click="Button_Click" Grid.Column="1"/>
-        <TextBox x:Name="TextBox_ProjectKey" HorizontalAlignment="Left" Height="26" Margin="22,74,0,0" TextWrapping="Wrap" Text="Project = AMR" VerticalAlignment="Top" Width="233" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="TextBox_ProjectKey" HorizontalAlignment="Left" Height="26" Margin="22,74,0,0" TextWrapping="Wrap" Text="Project = ABD" VerticalAlignment="Top" Width="233" TextChanged="TextBox_TextChanged"/>
         <ProgressBar x:Name="ProgressBar_Historie" HorizontalAlignment="Left" Height="24" Margin="0,395,0,0" VerticalAlignment="Top" Width="792" Grid.ColumnSpan="2"/>
         <Button x:Name="Button_FilePath" Content="Choose Filepath" HorizontalAlignment="Left" Height="39" Margin="10,279,0,0" VerticalAlignment="Top" Width="259" Click="Button_FilePath_Click" IsDefault="True"/>
         <TextBlock x:Name="TextBlock_Filepath" HorizontalAlignment="Left" Margin="10,226,0,0" TextWrapping="Wrap" Text="&lt;FilePath&gt;" VerticalAlignment="Top" Width="259" Height="48"/>
         <TextBox x:Name="TextBox_User" HorizontalAlignment="Left" Height="23" Margin="71.049,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" Grid.Column="1"/>
-        <TextBox x:Name="TextBox_Server_URL" HorizontalAlignment="Left" Height="23" Margin="71.049,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="296" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
+        <TextBox x:Name="TextBox_Server_URL" HorizontalAlignment="Left" Height="23" Margin="71,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="339" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -27,7 +27,10 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="210.049,49,0,0" VerticalAlignment="Top" Width="156" Height="23" Grid.Column="1"/>
+        <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="249,49,0,0" VerticalAlignment="Top" Width="163" Height="23" Grid.Column="1"/>
+        <Label Content="Username" Grid.Column="1" HorizontalAlignment="Left" Margin="0,49,0,0" VerticalAlignment="Top" Width="66"/>
+        <Label Content="PW" Grid.Column="1" HorizontalAlignment="Left" Margin="205,49,0,0" VerticalAlignment="Top" Width="49"/>
+        <Label Content="Server URL" Grid.Column="1" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Width="66" Height="42"/>
 
     </Grid>
 </Window>
