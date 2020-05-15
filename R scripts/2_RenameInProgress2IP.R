@@ -1,0 +1,1 @@
+KanbanDT <- rename(KanbanDT, c("IP"="In Progress"))

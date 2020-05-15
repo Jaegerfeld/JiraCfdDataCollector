@@ -1,0 +1,7 @@
+DTALL <- merge(DTOpenDist, DTAnalysisDist, all=TRUE)
+DTALL <- merge(DTALL, DTBacklogDist, all=TRUE)
+DTALL <- merge(DTALL, DTIPDist, all=TRUE)
+DTALL <- merge(DTALL, DTResolvedDist, all=TRUE)
+DTALL <- merge(DTALL, DTReleasingDist, all=TRUE)
+DTALL <- merge(DTALL, DTClosedDist, all=TRUE)
+DTALL <- merge(DTALL, DTDoneDist, all=TRUE)
