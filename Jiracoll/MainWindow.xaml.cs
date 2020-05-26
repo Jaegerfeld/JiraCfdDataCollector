@@ -27,6 +27,7 @@ namespace Jiracoll
         public MainWindow()
         {
             InitializeComponent();
+            TextBlock_Filepath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test1234.csv";
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -172,9 +173,10 @@ namespace Jiracoll
 
                 csvFileContent += "Key,Issuetype,Current Status,Created Date,";
 
-                string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet",  };
+                string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
 
-                
+
+
                 foreach (string item in s)
                 {
                     csvFileContent += item + ",";
