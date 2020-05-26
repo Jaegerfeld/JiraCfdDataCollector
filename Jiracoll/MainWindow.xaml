@@ -6,18 +6,18 @@
         xmlns:local="clr-namespace:Jiracoll"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Margin="1,1,-1,-1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="43*"/>
             <ColumnDefinition Width="56*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="Button_StartCollect" Content="Start" HorizontalAlignment="Left" Margin="17.049,251,0,0" VerticalAlignment="Top" Width="263" Height="96" Click="Button_Click" Grid.Column="1"/>
-        <TextBox x:Name="TextBox_ProjectKey" HorizontalAlignment="Left" Height="26" Margin="22,74,0,0" TextWrapping="Wrap" Text="Project = ABD" VerticalAlignment="Top" Width="233" TextChanged="TextBox_TextChanged"/>
+        <Button x:Name="Button_StartCollect" Content="Read from API " HorizontalAlignment="Left" Margin="71,166,0,0" VerticalAlignment="Top" Width="182" Height="57" Click="Button_Click" Background="#FF15E043" FontSize="20" FontFamily="Lucida Bright" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" Grid.Column="1"/>
+        <TextBox x:Name="TextBox_ProjectKey" HorizontalAlignment="Left" Height="26" Margin="71,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="233" TextChanged="TextBox_TextChanged" Grid.Column="1" Text="project = abd"/>
         <ProgressBar x:Name="ProgressBar_Historie" HorizontalAlignment="Left" Height="24" Margin="0,395,0,0" VerticalAlignment="Top" Width="792" Grid.ColumnSpan="2"/>
-        <Button x:Name="Button_FilePath" Content="Choose Filepath" HorizontalAlignment="Left" Height="39" Margin="10,279,0,0" VerticalAlignment="Top" Width="259" Click="Button_FilePath_Click" IsDefault="True"/>
-        <TextBlock x:Name="TextBlock_Filepath" HorizontalAlignment="Left" Margin="10,226,0,0" TextWrapping="Wrap" Text="&lt;FilePath&gt;" VerticalAlignment="Top" Width="259" Height="48"/>
+        <Button x:Name="Button_FilePath" Content="Choose Filepath" HorizontalAlignment="Left" Height="39" Margin="10,342,0,0" VerticalAlignment="Top" Width="139" Click="Button_FilePath_Click" IsDefault="True"/>
+        <TextBlock x:Name="TextBlock_Filepath" HorizontalAlignment="Left" Margin="154,342,0,0" TextWrapping="Wrap" Text="&lt;FilePath&gt;" VerticalAlignment="Top" Width="610" Height="48" Grid.ColumnSpan="2"/>
         <TextBox x:Name="TextBox_User" HorizontalAlignment="Left" Height="23" Margin="71.049,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" Grid.Column="1"/>
-        <TextBox x:Name="TextBox_Server_URL" HorizontalAlignment="Left" Height="23" Margin="71,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="339" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
+        <TextBox x:Name="TextBox_Server_URL" HorizontalAlignment="Left" Height="23" Margin="71.049,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="296" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -27,10 +27,9 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="249,49,0,0" VerticalAlignment="Top" Width="163" Height="23" Grid.Column="1"/>
-        <Label Content="Username" Grid.Column="1" HorizontalAlignment="Left" Margin="0,49,0,0" VerticalAlignment="Top" Width="66"/>
-        <Label Content="PW" Grid.Column="1" HorizontalAlignment="Left" Margin="205,49,0,0" VerticalAlignment="Top" Width="49"/>
-        <Label Content="Server URL" Grid.Column="1" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Width="66" Height="42"/>
+        <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="210.049,49,0,0" VerticalAlignment="Top" Width="156" Height="23" Grid.Column="1"/>
+        <Button x:Name="Button_SerlectJson" Content="Read from Json" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="211" Height="57" Click="Button_SelectJson_Click" RenderTransformOrigin="0.479,2.986" Background="#FFE8CB18" FontSize="24" FontFamily="Lucida Bright"/>
+        <TextBox x:Name="TextBox_JsonPath" HorizontalAlignment="Left" Height="49" Margin="10,62,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="306"/>
 
     </Grid>
 </Window>

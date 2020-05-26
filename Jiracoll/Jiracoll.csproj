@@ -73,12 +73,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ChangelogPOCO.cs" />
+    <Compile Include="IssueFieldsPOCO.cs" />
+    <Compile Include="IssueHistoryPOCO.cs" />
+    <Compile Include="IssuePOCO.cs" />
+    <Compile Include="IssuesPOCO.cs" />
+    <Compile Include="IssueStatusPOCO.cs" />
+    <Compile Include="IssueTypePOCO.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OwnIssue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,8 +113,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Import\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

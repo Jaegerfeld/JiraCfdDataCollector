@@ -1,5 +1,6 @@
 ﻿using Atlassian.Jira;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +34,6 @@ namespace Jiracoll
             string usr = TextBox_User.Text;
             string pw = PasswordBox_pw.Password;
             string url = TextBox_Server_URL.Text;
-
 
 
             var jira = Jira.CreateRestClient(url,usr,pw);
@@ -135,5 +135,105 @@ namespace Jiracoll
                 TextBlock_Filepath.Text = saveFileDialog.FileName;
             File.WriteAllText(saveFileDialog.FileName, "");
         }
+
+
+        private void Button_SelectJson_Click(object sender, RoutedEventArgs e)
+        {
+           
+
+            string jsonString ="";
+            int counter = 0; // Verlaufsbalken Zähler
+          
+            int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
+
+            String csvFileContent = "";
+
+           
+            IssueChangeLog issueChangelog = new IssueChangeLog();
+
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // get json & deserialize
+
+
+                jsonString = File.ReadAllText(openFileDialog.FileName);
+
+                TextBox_JsonPath.Text = openFileDialog.FileName;
+
+               IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
+
+
+
+                csvFileContent = "";
+
+                csvFileContent += "Key,Issuetype,Current Status,Created Date,";
+
+                string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet",  };
+
+                
+                foreach (string item in s)
+                {
+                    csvFileContent += item + ",";
+                }
+                csvFileContent += System.Environment.NewLine;
+
+
+
+                // baue dictionary mit status/zeitpaaren
+
+                issuesCount = JsonContent.issues.Count;
+
+                foreach (IssuePOCO issue in JsonContent.issues)
+                {
+
+
+                    String resultLine = "";
+                    // json convert anpassen auf issuetype "Fields hinzufügen"
+                    //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
+                    resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
+
+                    Dictionary<string, string> dict = new Dictionary<string, string>();
+                    foreach (IssueStatus issueStatus in s)
+                    {
+                        dict.Add(issueStatus.ToString(), "");
+                    }
+
+                    foreach (IssueHistoryPOCO history in issue.changelog.histories)
+                    {
+                        foreach (IssueChangeLogItem item in history.items)
+                        {
+                            if (item.FieldName.Equals("status"))
+                            {
+                                dict[item.ToValue] = history.created.ToString();
+
+                            }
+                        }
+                    }
+
+                    foreach (KeyValuePair<string, string> pair in dict)
+                    {
+                        resultLine += pair.Value + ",";
+                    }
+
+                    csvFileContent += resultLine + System.Environment.NewLine;
+                    Console.WriteLine(resultLine);
+                    counter++;
+                    ProgressBar_Historie.Value = 100 / issuesCount * counter;
+                }
+                
+
+            }
+
+            
+
+            Console.WriteLine("Ausgabe:    " +jsonString);
+            File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
+
+        }
+
     }
 }
