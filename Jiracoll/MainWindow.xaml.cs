@@ -137,6 +137,40 @@ namespace Jiracoll
             File.WriteAllText(saveFileDialog.FileName, "");
         }
 
+        private string[] getWorkflowFromCsv()
+        {
+            string[] returnArray;
+            List<String> strings = new List<string>();
+
+            
+            int counter = 0;
+            string line;
+          //  string path = Directory.GetCurrentDirectory();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
+          
+            // Read the file and display it line by line.  
+            System.IO.StreamReader file =
+                new System.IO.StreamReader(path);
+            
+            while ((line = file.ReadLine()) != null)
+            {
+                System.Console.WriteLine(line);
+                strings.Add(line);
+                counter++;
+            }
+
+           
+
+            file.Close();
+
+            returnArray = strings.ToArray();
+            System.Console.WriteLine("There were {0} lines.", counter);
+            // Suspend the screen.  
+            System.Console.ReadLine();
+
+
+            return returnArray;
+        }
 
         private void Button_SelectJson_Click(object sender, RoutedEventArgs e)
         {
@@ -173,7 +207,9 @@ namespace Jiracoll
 
                 csvFileContent += "Key,Issuetype,Current Status,Created Date,";
 
-                string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
+                string[] s = getWorkflowFromCsv();
+
+                //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
 
 
 

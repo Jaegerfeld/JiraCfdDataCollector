@@ -1,0 +1,8 @@
+"Inbound Channel"
+Backlog
+"Selected for Deployment" 
+"In Progress" 
+BLOCKED
+"Delivered for Approval" 
+Done
+
