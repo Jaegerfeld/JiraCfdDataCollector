@@ -1,7 +1,0 @@
-DTOpenStatus <- rename(DTOpenDist, c("Date"="Open"))
-DTAnalysisStatus <- rename(DTAnalysisDist, c("Date"="Analysis"))
-DTIPStatus <- rename(DTIPDist, c("Date"="IP"))
-DTResolvedStatus <- rename(DTResolvedDist, c("Date"="Resolved"))
-DTReleasingStatus <- rename(DTReleasingDist, c("Date"="Releasing"))
-DTClosedStatus <- rename(DTClosedDist, c("Date"="Closed"))
-DTDoneStatus <- rename(DTDoneDist, c("Date"="Done"))
