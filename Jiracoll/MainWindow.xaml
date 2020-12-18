@@ -30,6 +30,7 @@
         <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="210.049,49,0,0" VerticalAlignment="Top" Width="156" Height="23" Grid.Column="1"/>
         <Button x:Name="Button_SerlectJson" Content="Read from Json" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="211" Height="57" Click="Button_SelectJson_Click" RenderTransformOrigin="0.479,2.986" Background="#FFE8CB18" FontSize="24" FontFamily="Lucida Bright"/>
         <TextBox x:Name="TextBox_JsonPath" HorizontalAlignment="Left" Height="49" Margin="10,62,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="306"/>
+        <Button Content="Read Issues from Json" HorizontalAlignment="Left" Height="43" Margin="10,245,0,0" VerticalAlignment="Top" Width="211" Background="#FF1FE481" FontFamily="Lucida Bright" FontSize="18" Click="Button_IssuesFromJson"/>
 
     </Grid>
 </Window>

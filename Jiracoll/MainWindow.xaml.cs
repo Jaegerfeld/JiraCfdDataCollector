@@ -29,7 +29,7 @@ namespace Jiracoll
             InitializeComponent();
             TextBlock_Filepath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test1234.csv";
         }
-
+        // Aufbau CFD CSV mit API Call
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             string usr = TextBox_User.Text;
@@ -127,6 +127,7 @@ namespace Jiracoll
 
         }
 
+        // CSV export pfad
         private void Button_FilePath_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -273,5 +274,146 @@ namespace Jiracoll
 
         }
 
+        private void Button_IssuesFromJson(object sender, RoutedEventArgs e)
+        {
+            string jsonString = "";
+            int counter = 0; // Verlaufsbalken Zähler
+
+            int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
+
+            String csvFileContent = "";
+
+
+            IssueChangeLog issueChangelog = new IssueChangeLog();
+
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // get json & deserialize
+
+
+                jsonString = File.ReadAllText(openFileDialog.FileName);
+
+                TextBox_JsonPath.Text = openFileDialog.FileName;
+
+                IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
+
+
+
+                csvFileContent = "";
+
+                csvFileContent += "Key,Issuetype,Current Status,Created Date,";
+
+                string[] statuses = getWorkflowFromCsv();
+
+                //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
+
+
+
+                foreach (string item in statuses)
+                {
+                    csvFileContent += item + ",";
+                }
+                csvFileContent += "Closed,";
+                csvFileContent += System.Environment.NewLine;
+
+
+
+                // baue dictionary mit status/zeitpaaren
+
+                issuesCount = JsonContent.issues.Count;
+
+                foreach (IssuePOCO issue in JsonContent.issues)
+                {
+
+
+                    String resultLine = "";
+                    // json convert anpassen auf issuetype "Fields hinzufügen"
+                    //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
+                    resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
+
+                    Dictionary<string, int> dict = new Dictionary<string, int>();
+                    foreach(string item in statuses)
+                    {
+                        dict[item] = 0;
+                    }
+
+                    List<StatusRich> statusRichList = new List<StatusRich>();               
+
+                    foreach (IssueHistoryPOCO history in issue.changelog.histories)
+                    {
+                        foreach (IssueChangeLogItem item in history.items)
+                        {
+                            if (item.FieldName.Equals("status"))
+                            {
+                                StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
+
+                                statusRichList.Add(statusTransformation);
+                            }
+                        }
+                    }
+                    DateTime CloseDate = new DateTime();
+                    // umsortieren letzter zuerst, desc
+                    statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
+
+                    
+                    // wenn Status gefunden, wenn  nicht: immer noch open
+                    if (statusRichList.Count > 0)
+                    {
+                        DateTime last;
+                        // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                        if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                        {
+                            CloseDate = statusRichList.Max(obj => obj.TimeStamp);
+                        }
+
+                        last = statusRichList.Max(obj => obj.TimeStamp);
+
+
+                        // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
+                        foreach (StatusRich statusTrans in statusRichList)
+                        {
+                            TimeSpan ts = last - statusTrans.TimeStamp ;
+                            statusTrans.Minutes = (int)ts.TotalMinutes;
+                            last = statusTrans.TimeStamp;
+                            dict[statusTrans.Name] += statusTrans.Minutes;
+                        }
+                        
+                    }
+
+                                
+                    foreach (KeyValuePair<string, int> pair in dict)
+                    {
+                        resultLine += pair.Value + ",";
+                    }
+
+                    if(CloseDate.Equals(new DateTime()))
+                    {
+                        resultLine += ",";
+                    }
+                    else
+                    {
+                        resultLine += CloseDate.ToString() + ","; 
+                    }
+
+
+                    csvFileContent += resultLine + System.Environment.NewLine;
+                    
+                    Console.WriteLine(resultLine);
+                    counter++;
+                    ProgressBar_Historie.Value = 100 / issuesCount * counter;
+                }
+
+
+            }
+
+
+
+            Console.WriteLine("Ausgabe:    " + jsonString);
+            File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
+        }
     }
 }
