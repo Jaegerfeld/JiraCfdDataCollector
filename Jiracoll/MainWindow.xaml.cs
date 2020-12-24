@@ -138,10 +138,9 @@ namespace Jiracoll
             File.WriteAllText(saveFileDialog.FileName, "");
         }
 
-        private string[] getWorkflowFromCsv()
+        private List<WorkflowStep> getWorkflowFromCsv()
         {
-            string[] returnArray;
-            List<String> strings = new List<string>();
+            List<WorkflowStep> returnList = new List<WorkflowStep>();
 
             
             int counter = 0;
@@ -156,7 +155,45 @@ namespace Jiracoll
             while ((line = file.ReadLine()) != null)
             {
                 System.Console.WriteLine(line);
-                strings.Add(line);
+
+                if (line.Contains("<First>"))
+                {
+                    string name = line.Split('>')[1];
+                    (returnList.Find(item => item.Name == name)).First = true;
+                }
+
+                else if (line.Contains("<Last>"))
+                {
+                    string name = line.Split('>')[1];
+                    (returnList.Find(item => item.Name == name)).Last = true;               
+                }
+
+                else
+                {
+                    if (line.Contains(":"))
+                    {
+                        int index = 0;
+                        string[] statusArray = line.Split(':');
+                        string mainStatus = statusArray[0];
+
+                        for(int i = index; i < statusArray.Length; i++  )
+                        {
+                            returnList.Add(new WorkflowStep(statusArray[i].Trim(), statusArray[0].Trim()));
+                        }                    
+
+                    }
+                    else
+                    {
+                        returnList.Add(new WorkflowStep(line.Trim(), line.Trim()));
+                    }
+
+                }
+
+
+
+
+
+                //returnList.Add(line);
                 counter++;
             }
 
@@ -164,113 +201,113 @@ namespace Jiracoll
 
             file.Close();
 
-            returnArray = strings.ToArray();
-            System.Console.WriteLine("There were {0} lines.", counter);
+            //returnArray = strings.ToArray();
+            //System.Console.WriteLine("There were {0} lines.", counter);
             // Suspend the screen.  
             System.Console.ReadLine();
 
 
-            return returnArray;
+            return returnList;
         }
 
         private void Button_SelectJson_Click(object sender, RoutedEventArgs e)
         {
            
 
-            string jsonString ="";
-            int counter = 0; // Verlaufsbalken Zähler
+            //string jsonString ="";
+            //int counter = 0; // Verlaufsbalken Zähler
           
-            int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
+            //int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
 
-            String csvFileContent = "";
+            //String csvFileContent = "";
 
            
-            IssueChangeLog issueChangelog = new IssueChangeLog();
+            //IssueChangeLog issueChangelog = new IssueChangeLog();
 
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (openFileDialog.ShowDialog() == true)
-            {
-                // get json & deserialize
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+            //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    // get json & deserialize
 
 
-                jsonString = File.ReadAllText(openFileDialog.FileName);
+            //    jsonString = File.ReadAllText(openFileDialog.FileName);
 
-                TextBox_JsonPath.Text = openFileDialog.FileName;
+            //    TextBox_JsonPath.Text = openFileDialog.FileName;
 
-               IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
-
-
-
-                csvFileContent = "";
-
-                csvFileContent += "Key,Issuetype,Current Status,Created Date,";
-
-                string[] s = getWorkflowFromCsv();
-
-                //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
+            //   IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
 
 
-                foreach (string item in s)
-                {
-                    csvFileContent += item + ",";
-                }
-                csvFileContent += System.Environment.NewLine;
+            //    csvFileContent = "";
+
+            //    csvFileContent += "Key,Issuetype,Current Status,Created Date,";
+
+            //   List<WorkflowStep> s = getWorkflowFromCsv();
+
+            //    //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
 
 
 
-                // baue dictionary mit status/zeitpaaren
+            //    foreach (WorkflowStep item in s)
+            //    {
+            //        csvFileContent += item.Name + ",";
+            //    }
+            //    csvFileContent += System.Environment.NewLine;
 
-                issuesCount = JsonContent.issues.Count;
-
-                foreach (IssuePOCO issue in JsonContent.issues)
-                {
 
 
-                    String resultLine = "";
-                    // json convert anpassen auf issuetype "Fields hinzufügen"
-                    //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
-                    resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
+            //    // baue dictionary mit status/zeitpaaren
 
-                    Dictionary<string, string> dict = new Dictionary<string, string>();
-                    foreach (IssueStatus issueStatus in s)
-                    {
-                        dict.Add(issueStatus.ToString(), "");
-                    }
+            //    issuesCount = JsonContent.issues.Count;
 
-                    foreach (IssueHistoryPOCO history in issue.changelog.histories)
-                    {
-                        foreach (IssueChangeLogItem item in history.items)
-                        {
-                            if (item.FieldName.Equals("status"))
-                            {
-                                dict[item.ToValue] = history.created.ToString();
+            //    foreach (IssuePOCO issue in JsonContent.issues)
+            //    {
 
-                            }
-                        }
-                    }
 
-                    foreach (KeyValuePair<string, string> pair in dict)
-                    {
-                        resultLine += pair.Value + ",";
-                    }
+            //        String resultLine = "";
+            //        // json convert anpassen auf issuetype "Fields hinzufügen"
+            //        //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
+            //        resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
-                    csvFileContent += resultLine + System.Environment.NewLine;
-                    Console.WriteLine(resultLine);
-                    counter++;
-                    ProgressBar_Historie.Value = 100 / issuesCount * counter;
-                }
+            //        Dictionary<WorkflowStep, string> dict = new Dictionary<WorkflowStep, string>();
+            //        foreach (WorkflowStep issueStatus in s)
+            //        {
+            //            dict.Add(issueStatus, "");
+            //        }
+
+            //        foreach (IssueHistoryPOCO history in issue.changelog.histories)
+            //        {
+            //            foreach (IssueChangeLogItem item in history.items)
+            //            {
+            //                if (item.FieldName.Equals("status"))
+            //                {
+            //                    dict[item.ToValue] = history.created.ToString();
+
+            //                }
+            //            }
+            //        }
+
+            //        foreach (KeyValuePair<string, string> pair in dict)
+            //        {
+            //            resultLine += pair.Value + ",";
+            //        }
+
+            //        csvFileContent += resultLine + System.Environment.NewLine;
+            //        Console.WriteLine(resultLine);
+            //        counter++;
+            //        ProgressBar_Historie.Value = 100 / issuesCount * counter;
+            //    }
                 
 
-            }
+            //}
 
             
 
-            Console.WriteLine("Ausgabe:    " +jsonString);
-            File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
+            //Console.WriteLine("Ausgabe:    " +jsonString);
+            //File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
 
         }
 
@@ -305,17 +342,19 @@ namespace Jiracoll
 
                 csvFileContent = "";
 
-                csvFileContent += "Key,Issuetype,Current Status,Created Date,";
+                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component";
+                
+                
 
-                string[] statuses = getWorkflowFromCsv();
+               List<WorkflowStep> statuses = getWorkflowFromCsv();
 
                 //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
 
 
 
-                foreach (string item in statuses)
+                foreach (WorkflowStep status in statuses)
                 {
-                    csvFileContent += item + ",";
+                    csvFileContent += status.Name + ",";
                 }
                 csvFileContent += "Closed,";
                 csvFileContent += System.Environment.NewLine;
@@ -335,10 +374,17 @@ namespace Jiracoll
                     //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
                     resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
-                    Dictionary<string, int> dict = new Dictionary<string, int>();
-                    foreach(string item in statuses)
+                    foreach(IssueComponentsItemPOCO item in issue.fields.components)
                     {
-                        dict[item] = 0;
+                        resultLine += item.name + " " ;
+                    }
+
+                    resultLine += ",";
+
+                    Dictionary<string, int> dict = new Dictionary<string, int>();
+                    foreach(WorkflowStep status in statuses)
+                    {
+                        dict[status.Name] = 0;
                     }
 
                     List<StatusRich> statusRichList = new List<StatusRich>();               

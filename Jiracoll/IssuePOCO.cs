@@ -15,6 +15,7 @@ namespace Jiracoll
         public string key { get; set; }
         public ChangelogPOCO changelog { get; set; }
         public IssueFieldsPOCO fields { get; set; }
+       
 
     }
 }

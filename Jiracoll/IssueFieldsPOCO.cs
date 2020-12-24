@@ -13,6 +13,7 @@ namespace Jiracoll
         public DateTime created { get; set; }
         public IssueTypePOCO issuetype { get; set; }
         public IssueStatusPOCO status { get; set; }
+        public IList<IssueComponentsItemPOCO> components { get; set; }
 
     }
 }
