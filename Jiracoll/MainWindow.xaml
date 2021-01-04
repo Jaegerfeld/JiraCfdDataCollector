@@ -11,9 +11,9 @@
             <ColumnDefinition Width="43*"/>
             <ColumnDefinition Width="56*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="Button_StartCollect" Content="Read from API " HorizontalAlignment="Left" Margin="71,166,0,0" VerticalAlignment="Top" Width="182" Height="57" Click="Button_Click" Background="#FF15E043" FontSize="20" FontFamily="Lucida Bright" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" Grid.Column="1"/>
+        <Button x:Name="Button_StartCollect" Content="CFD from API " HorizontalAlignment="Left" Margin="71,166,0,0" VerticalAlignment="Top" Width="182" Height="57" Click="Button_ReadFromAPI" Background="#FF15E043" FontSize="20" FontFamily="Lucida Bright" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" Grid.Column="1"/>
         <TextBox x:Name="TextBox_ProjectKey" HorizontalAlignment="Left" Height="26" Margin="71,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="233" TextChanged="TextBox_TextChanged" Grid.Column="1" Text="project = abd"/>
-        <ProgressBar x:Name="ProgressBar_Historie" HorizontalAlignment="Left" Height="24" Margin="0,395,0,0" VerticalAlignment="Top" Width="792" Grid.ColumnSpan="2"/>
+        <ProgressBar x:Name="ProgressBar_Historie" HorizontalAlignment="Left" Height="24" Margin="0,395,0,0" VerticalAlignment="Top" Width="792" Grid.ColumnSpan="2" ValueChanged="ProgressBar_Historie_ValueChanged"/>
         <Button x:Name="Button_FilePath" Content="Choose Filepath" HorizontalAlignment="Left" Height="39" Margin="10,342,0,0" VerticalAlignment="Top" Width="139" Click="Button_FilePath_Click" IsDefault="True"/>
         <TextBlock x:Name="TextBlock_Filepath" HorizontalAlignment="Left" Margin="154,342,0,0" TextWrapping="Wrap" Text="&lt;FilePath&gt;" VerticalAlignment="Top" Width="610" Height="48" Grid.ColumnSpan="2"/>
         <TextBox x:Name="TextBox_User" HorizontalAlignment="Left" Height="23" Margin="71.049,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" Grid.Column="1"/>
@@ -28,7 +28,7 @@
             </TextBox.RenderTransform>
         </TextBox>
         <PasswordBox x:Name="PasswordBox_pw" HorizontalAlignment="Left" Margin="210.049,49,0,0" VerticalAlignment="Top" Width="156" Height="23" Grid.Column="1"/>
-        <Button x:Name="Button_SerlectJson" Content="Read from Json" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="211" Height="57" Click="Button_SelectJson_Click" RenderTransformOrigin="0.479,2.986" Background="#FFE8CB18" FontSize="24" FontFamily="Lucida Bright"/>
+        <Button x:Name="Button_SerlectJson" Content="CFD from Json" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="211" Height="57" Click="Button_CfdFromJson_Click" RenderTransformOrigin="0.479,2.986" Background="#FFE8CB18" FontSize="24" FontFamily="Lucida Bright"/>
         <TextBox x:Name="TextBox_JsonPath" HorizontalAlignment="Left" Height="49" Margin="10,62,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="306"/>
         <Button Content="Read Issues from Json" HorizontalAlignment="Left" Height="43" Margin="10,245,0,0" VerticalAlignment="Top" Width="211" Background="#FF1FE481" FontFamily="Lucida Bright" FontSize="18" Click="Button_IssuesFromJson"/>
 

@@ -30,7 +30,7 @@ namespace Jiracoll
             TextBlock_Filepath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test1234.csv";
         }
         // Aufbau CFD CSV mit API Call
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_ReadFromAPI(object sender, RoutedEventArgs e)
         {
             string usr = TextBox_User.Text;
             string pw = PasswordBox_pw.Password;
@@ -138,6 +138,16 @@ namespace Jiracoll
             File.WriteAllText(saveFileDialog.FileName, "");
         }
 
+        /* Definiztion des Workflows
+        pro Zeile ein Workflow, Reihenfolge vertikal ist die Reihgenfolge im Export csv horizontal
+        deprecated Status können auf aktuelle gemappt werden. Führender Status ist der aktuellöe auf den gemappt wird.
+        Trennzeichen :
+        e.g. 
+        To Do:Open
+        Für die messung der T2M kann ein Start und End Status angegeben werden
+        e.g. 
+        <First>Open
+        <Last>Completed*/
         private List<WorkflowStep> getWorkflowFromCsv()
         {
             List<WorkflowStep> returnList = new List<WorkflowStep>();
@@ -210,7 +220,8 @@ namespace Jiracoll
             return returnList;
         }
 
-        private void Button_SelectJson_Click(object sender, RoutedEventArgs e)
+        // Auswahl der einzulesenden Json Datei
+        private void Button_CfdFromJson_Click(object sender, RoutedEventArgs e)
         {
            
 
@@ -310,7 +321,12 @@ namespace Jiracoll
             //File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
 
         }
-
+        /* Aufbau einer Tabelle: pro gefundenem Issue aufsummiert alle Zeiten pro Status in Minuten.
+        e.g.   To Do  | In Progress | In Test
+               500    |   876       |  456
+        gezählt werden Verstreichminuten (Progress Time), NICHT action Time (echte Arbeitszeit)
+        24 h / 7 Tage Woche 
+        */
         private void Button_IssuesFromJson(object sender, RoutedEventArgs e)
         {
             string jsonString = "";
@@ -342,24 +358,23 @@ namespace Jiracoll
 
                 csvFileContent = "";
 
-                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component";
+                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component,";
                 
                 
 
                List<WorkflowStep> statuses = getWorkflowFromCsv();
 
-                //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
-
-
-
+                // Nur MapTargets sind aktuelle Status, der Rest ist gemappt 
                 foreach (WorkflowStep status in statuses)
                 {
-                    csvFileContent += status.Name + ",";
+                    if (status.Name.Equals(status.MapTarget))
+                    {
+                        csvFileContent += status.Name + ",";
+                    }
+                   
                 }
                 csvFileContent += "Closed,";
                 csvFileContent += System.Environment.NewLine;
-
-
 
                 // baue dictionary mit status/zeitpaaren
 
@@ -371,15 +386,19 @@ namespace Jiracoll
 
                     String resultLine = "";
                     // json convert anpassen auf issuetype "Fields hinzufügen"
-                    //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
+                  
                     resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
-                    foreach(IssueComponentsItemPOCO item in issue.fields.components)
+                    if(issue.fields.components != null)
                     {
-                        resultLine += item.name + " " ;
-                    }
+                        foreach (IssueComponentsItemPOCO item in issue.fields.components)
+                        {
+                            resultLine += item.name + "|";
+                        }
 
-                    resultLine += ",";
+                        resultLine += ",";
+                    }
+                   
 
                     Dictionary<string, int> dict = new Dictionary<string, int>();
                     foreach(WorkflowStep status in statuses)
@@ -460,6 +479,11 @@ namespace Jiracoll
 
             Console.WriteLine("Ausgabe:    " + jsonString);
             File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
+        }
+
+        private void ProgressBar_Historie_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }
