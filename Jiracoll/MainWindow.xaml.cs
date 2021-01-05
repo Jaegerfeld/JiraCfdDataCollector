@@ -138,7 +138,7 @@ namespace Jiracoll
             File.WriteAllText(saveFileDialog.FileName, "");
         }
 
-        /* Definiztion des Workflows
+        /* Definition des Workflows
         pro Zeile ein Workflow, Reihenfolge vertikal ist die Reihgenfolge im Export csv horizontal
         deprecated Status können auf aktuelle gemappt werden. Führender Status ist der aktuellöe auf den gemappt wird.
         Trennzeichen :
@@ -148,7 +148,7 @@ namespace Jiracoll
         e.g. 
         <First>Open
         <Last>Completed*/
-        private List<WorkflowStep> getWorkflowFromCsv()
+        private List<WorkflowStep> getWorkflowFromFile()
         {
             List<WorkflowStep> returnList = new List<WorkflowStep>();
 
@@ -186,10 +186,15 @@ namespace Jiracoll
                         string[] statusArray = line.Split(':');
                         string mainStatus = statusArray[0];
 
-                        for(int i = index; i < statusArray.Length; i++  )
+                        // first Entry == current Status
+                        WorkflowStep status = new WorkflowStep(statusArray[0].Trim(), statusArray[0].Trim());
+
+                        // Entry 2+ == mapped deprecated status
+                        for (int i = index; i < statusArray.Length; i++)
                         {
-                            returnList.Add(new WorkflowStep(statusArray[i].Trim(), statusArray[0].Trim()));
-                        }                    
+                            status.Aliases.Add(statusArray[i].Trim());                            
+                        }
+                        returnList.Add(status);
 
                     }
                     else
@@ -199,23 +204,10 @@ namespace Jiracoll
 
                 }
 
-
-
-
-
-                //returnList.Add(line);
                 counter++;
             }
 
-           
-
             file.Close();
-
-            //returnArray = strings.ToArray();
-            //System.Console.WriteLine("There were {0} lines.", counter);
-            // Suspend the screen.  
-            System.Console.ReadLine();
-
 
             return returnList;
         }
@@ -256,7 +248,7 @@ namespace Jiracoll
 
             //    csvFileContent += "Key,Issuetype,Current Status,Created Date,";
 
-            //   List<WorkflowStep> s = getWorkflowFromCsv();
+            //   List<WorkflowStep> s = getWorkflowFromFile();
 
             //    //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
 
@@ -336,9 +328,7 @@ namespace Jiracoll
 
             String csvFileContent = "";
 
-
             IssueChangeLog issueChangelog = new IssueChangeLog();
-
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
@@ -354,39 +344,31 @@ namespace Jiracoll
 
                 IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
-
-
                 csvFileContent = "";
 
                 csvFileContent += "Key,Issuetype,Current Status,Created Date,Component,";
-                
-                
+                                
+               List<WorkflowStep> statuses = getWorkflowFromFile();
 
-               List<WorkflowStep> statuses = getWorkflowFromCsv();
-
-                // Nur MapTargets sind aktuelle Status, der Rest ist gemappt 
+                // 
                 foreach (WorkflowStep status in statuses)
-                {
-                    if (status.Name.Equals(status.MapTarget))
-                    {
-                        csvFileContent += status.Name + ",";
-                    }
-                   
+                {              
+                        csvFileContent += status.Name + ",";             
                 }
-                csvFileContent += "Closed,";
+
+                csvFileContent += "Closed Date,";
                 csvFileContent += System.Environment.NewLine;
 
                 // baue dictionary mit status/zeitpaaren
-
                 issuesCount = JsonContent.issues.Count;
 
                 foreach (IssuePOCO issue in JsonContent.issues)
                 {
-
-
                     String resultLine = "";
+                    string lastName = "";
+                    string firstName = "";
                     // json convert anpassen auf issuetype "Fields hinzufügen"
-                  
+
                     resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
                     if(issue.fields.components != null)
@@ -399,11 +381,19 @@ namespace Jiracoll
                         resultLine += ",";
                     }
                    
-
                     Dictionary<string, int> dict = new Dictionary<string, int>();
                     foreach(WorkflowStep status in statuses)
                     {
                         dict[status.Name] = 0;
+                        if (status.Last)
+                        {
+                             lastName = status.Name;
+                        }
+                        if (status.First)
+                        {
+                             firstName = status.Name;
+                        }
+
                     }
 
                     List<StatusRich> statusRichList = new List<StatusRich>();               
@@ -423,20 +413,19 @@ namespace Jiracoll
                     DateTime CloseDate = new DateTime();
                     // umsortieren letzter zuerst, desc
                     statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
-
-                    
+                   
                     // wenn Status gefunden, wenn  nicht: immer noch open
                     if (statusRichList.Count > 0)
                     {
                         DateTime last;
+
                         // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                        if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                        //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                        if (statusRichList.Any(p => p.Name.Equals(lastName)))
                         {
                             CloseDate = statusRichList.Max(obj => obj.TimeStamp);
                         }
-
                         last = statusRichList.Max(obj => obj.TimeStamp);
-
 
                         // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                         foreach (StatusRich statusTrans in statusRichList)
@@ -444,12 +433,26 @@ namespace Jiracoll
                             TimeSpan ts = last - statusTrans.TimeStamp ;
                             statusTrans.Minutes = (int)ts.TotalMinutes;
                             last = statusTrans.TimeStamp;
-                            dict[statusTrans.Name] += statusTrans.Minutes;
-                        }
-                        
-                    }
+                            string statusName = "";
+                            if (!(dict.ContainsKey(statusTrans.Name)))
+                            {
+                                foreach(WorkflowStep step in statuses)
+                                {
+                                    if (step.Aliases.Contains(statusTrans.Name))
+                                    {
+                                        statusName = step.Name;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                statusName = statusTrans.Name;
+                            }
 
-                                
+                            dict[statusName] += statusTrans.Minutes;
+                        }                      
+                    }
+                               
                     foreach (KeyValuePair<string, int> pair in dict)
                     {
                         resultLine += pair.Value + ",";
@@ -464,14 +467,12 @@ namespace Jiracoll
                         resultLine += CloseDate.ToString() + ","; 
                     }
 
-
                     csvFileContent += resultLine + System.Environment.NewLine;
                     
                     Console.WriteLine(resultLine);
                     counter++;
                     ProgressBar_Historie.Value = 100 / issuesCount * counter;
                 }
-
 
             }
 
