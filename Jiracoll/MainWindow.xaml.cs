@@ -178,6 +178,12 @@ namespace Jiracoll
                     (returnList.Find(item => item.Name == name)).Last = true;               
                 }
 
+                else if (line.Contains("<Create>"))
+                {
+                    string name = line.Split('>')[1];
+                    (returnList.Find(item => item.Name == name)).CreateState = true;
+                }
+
                 else
                 {
                     if (line.Contains(":"))
@@ -356,7 +362,8 @@ namespace Jiracoll
                         csvFileContent += status.Name + ",";             
                 }
 
-                csvFileContent += "Closed Date,";
+                csvFileContent += "First Date,Closed Date,";
+
                 csvFileContent += System.Environment.NewLine;
 
                 // baue dictionary mit status/zeitpaaren
@@ -411,11 +418,23 @@ namespace Jiracoll
                         }
                     }
                     DateTime CloseDate = new DateTime();
+                    DateTime FirstDate = new DateTime();
                     // umsortieren letzter zuerst, desc
                     statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
-                   
-                    // wenn Status gefunden, wenn  nicht: immer noch open
-                    if (statusRichList.Count > 0)
+
+                    // kwin Statuswechsel inj History ==> immer noch im initialen Status
+                     if (statusRichList.Count < 1)
+                    {
+                        
+                        
+                        DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
+                        TimeSpan ts = currentDate - issue.fields.created;
+                        int minutes = (int)ts.TotalMinutes;
+                                               
+                        resultLine += minutes + ",";
+                    }
+                    // sonst Status gefunden, wenn  nicht: immer noch open
+                    else
                     {
                         DateTime last;
 
@@ -425,8 +444,26 @@ namespace Jiracoll
                         {
                             CloseDate = statusRichList.Max(obj => obj.TimeStamp);
                         }
-                        last = statusRichList.Max(obj => obj.TimeStamp);
 
+                        if (statusRichList.Any(p => p.Name.Equals(firstName)))
+                        {
+                            FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                        }
+                        // wenn nur EIN Status => immer noch im Ursprungsstatus. Vergangene Zeit daher 
+                        // Zeitpunkt der Erhebung - Zeitpunkt der Erstellung des Tickets
+                        //if(statusRichList.Count < 2)
+                        //{
+                        //    last = new DateTime(2020, 12, 16, 23, 59, 00);
+                        //}
+                        //else
+                        //{
+                        //    last = statusRichList.Max(obj => obj.TimeStamp);
+                        //}
+
+                        // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")
+                        
+                        
+                        last = new DateTime(2020, 12, 17, 12, 29, 00);
                         // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                         foreach (StatusRich statusTrans in statusRichList)
                         {
@@ -452,13 +489,24 @@ namespace Jiracoll
                             dict[statusName] += statusTrans.Minutes;
                         }                      
                     }
+                   
                                
                     foreach (KeyValuePair<string, int> pair in dict)
                     {
                         resultLine += pair.Value + ",";
                     }
 
-                    if(CloseDate.Equals(new DateTime()))
+
+                    if (FirstDate.Equals(new DateTime()))
+                    {
+                        resultLine += ",";
+                    }
+                    else
+                    {
+                        resultLine += FirstDate.ToString() + ",";
+                    }
+
+                    if (CloseDate.Equals(new DateTime()))
                     {
                         resultLine += ",";
                     }
@@ -466,6 +514,7 @@ namespace Jiracoll
                     {
                         resultLine += CloseDate.ToString() + ","; 
                     }
+                   
 
                     csvFileContent += resultLine + System.Environment.NewLine;
                     

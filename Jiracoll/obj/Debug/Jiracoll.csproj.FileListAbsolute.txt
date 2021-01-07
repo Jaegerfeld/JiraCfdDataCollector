@@ -61,7 +61,6 @@ C:\Users\obe\Source\Repos\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.cspro
 C:\Users\obe\Source\Repos\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csproj.CopyComplete
 C:\Users\obe\Source\Repos\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.exe
 C:\Users\obe\Source\Repos\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.pdb
-H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csprojAssemblyReference.cache
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\MainWindow.g.cs
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\App.g.cs
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll_MarkupCompile.cache
@@ -82,3 +81,4 @@ H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.Propertie
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csproj.GenerateResource.cache
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csproj.CoreCompileInputs.cache
 H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csproj.CopyComplete
+H:\Repositorys\Github\JiraCfdDataCollector\Jiracoll\obj\Debug\Jiracoll.csprojAssemblyReference.cache

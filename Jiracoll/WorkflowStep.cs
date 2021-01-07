@@ -13,6 +13,7 @@ namespace Jiracoll
         List<String> aliases;
         Boolean first = false;
         Boolean last = false;
+        Boolean createState = false;
 
         public WorkflowStep() { }
         public WorkflowStep(string name, string mapTarget)
@@ -28,6 +29,7 @@ namespace Jiracoll
         public bool First { get => first; set => first = value; }
         public bool Last { get => last; set => last = value; }
         public List<string> Aliases { get => aliases; set => aliases = value; }
+        public bool CreateState { get => createState; set => createState = value; }
     }
 
 }
