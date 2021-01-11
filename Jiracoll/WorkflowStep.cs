@@ -14,6 +14,7 @@ namespace Jiracoll
         Boolean first = false;
         Boolean last = false;
         Boolean createState = false;
+        Boolean doneState = false;
 
         public WorkflowStep() { }
         public WorkflowStep(string name, string mapTarget)
@@ -30,6 +31,7 @@ namespace Jiracoll
         public bool Last { get => last; set => last = value; }
         public List<string> Aliases { get => aliases; set => aliases = value; }
         public bool CreateState { get => createState; set => createState = value; }
+        public bool DoneState { get => doneState; set => doneState = value; }
     }
 
 }

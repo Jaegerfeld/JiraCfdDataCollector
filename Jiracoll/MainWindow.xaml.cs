@@ -212,6 +212,20 @@ namespace Jiracoll
 
                 counter++;
             }
+            Boolean ended = false; 
+
+            foreach(WorkflowStep step in returnList)
+            {
+
+                if (step.Last)
+                {
+                    ended = true;
+                }
+                if (ended)
+                {
+                    step.DoneState = true;
+                }
+            }
 
             file.Close();
 
@@ -356,10 +370,16 @@ namespace Jiracoll
                                 
                List<WorkflowStep> statuses = getWorkflowFromFile();
 
+                List<string> doneStatesList = new List<string>();
+
                 // 
                 foreach (WorkflowStep status in statuses)
                 {              
-                        csvFileContent += status.Name + ",";             
+                        csvFileContent += status.Name + ",";
+                    if (status.DoneState)
+                    {
+                        doneStatesList.Add(status.Name);
+                    }        
                 }
 
                 csvFileContent += "First Date,Closed Date,";
@@ -374,6 +394,7 @@ namespace Jiracoll
                     String resultLine = "";
                     string lastName = "";
                     string firstName = "";
+                    Boolean foundDate = false;
                     // json convert anpassen auf issuetype "Fields hinzufügen"
 
                     resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
@@ -419,10 +440,11 @@ namespace Jiracoll
                     }
                     DateTime CloseDate = new DateTime();
                     DateTime FirstDate = new DateTime();
+                    DateTime DoneDate = new DateTime();
                     // umsortieren letzter zuerst, desc
                     statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
 
-                    // kwin Statuswechsel inj History ==> immer noch im initialen Status
+                    // kein Statuswechsel in History ==> immer noch im initialen Status
                      if (statusRichList.Count < 1)
                     {
                         
@@ -449,6 +471,7 @@ namespace Jiracoll
                         {
                             FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                         }
+                        
                         // wenn nur EIN Status => immer noch im Ursprungsstatus. Vergangene Zeit daher 
                         // Zeitpunkt der Erhebung - Zeitpunkt der Erstellung des Tickets
                         //if(statusRichList.Count < 2)
@@ -466,7 +489,7 @@ namespace Jiracoll
                         last = new DateTime(2020, 12, 17, 12, 29, 00);
                         // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                         foreach (StatusRich statusTrans in statusRichList)
-                        {
+                        {                           
                             TimeSpan ts = last - statusTrans.TimeStamp ;
                             statusTrans.Minutes = (int)ts.TotalMinutes;
                             last = statusTrans.TimeStamp;
@@ -485,7 +508,11 @@ namespace Jiracoll
                             {
                                 statusName = statusTrans.Name;
                             }
-
+                            if (doneStatesList.Contains(statusName))
+                            {
+                                DoneDate = statusTrans.TimeStamp;
+                                foundDate = true;
+                            }
                             dict[statusName] += statusTrans.Minutes;
                         }                      
                     }
@@ -498,8 +525,8 @@ namespace Jiracoll
 
 
                     if (FirstDate.Equals(new DateTime()))
-                    {
-                        resultLine += ",";
+                    {                     
+                            resultLine += ",";
                     }
                     else
                     {
@@ -508,6 +535,10 @@ namespace Jiracoll
 
                     if (CloseDate.Equals(new DateTime()))
                     {
+                        if (foundDate)
+                        {
+                            resultLine += DoneDate.ToString() + ",";
+                        }
                         resultLine += ",";
                     }
                     else
