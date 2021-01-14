@@ -36,11 +36,9 @@ namespace Jiracoll
             string pw = PasswordBox_pw.Password;
             string url = TextBox_Server_URL.Text;
 
-
             var jira = Jira.CreateRestClient(url,usr,pw);
 
             Console.WriteLine(jira.ToString());
-
 
             String projectKey = TextBox_ProjectKey.Text;
             //string jqlLine = "project = " + projectKey;
@@ -72,10 +70,9 @@ namespace Jiracoll
                 startAt += 20;
             }  
 
-
             ProgressBar_Historie.Value = 100 / issues.Count() * counter;
 
-            // suche pro abgerufgenes Issue die Basisdaten..... 
+            // suche pro abgerufenes Issue die Basisdaten..... 
             foreach (Issue i in issues)
             {
                 String resultLine = "";
@@ -151,7 +148,7 @@ namespace Jiracoll
         private List<WorkflowStep> getWorkflowFromFile()
         {
             List<WorkflowStep> returnList = new List<WorkflowStep>();
-
+           
             
             int counter = 0;
             string line;
@@ -349,18 +346,15 @@ namespace Jiracoll
             String csvFileContent = "";
 
             IssueChangeLog issueChangelog = new IssueChangeLog();
+            List<String> notFoundStep = new List<String>();
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (openFileDialog.ShowDialog() == true)
+            if (true)
             {
                 // get json & deserialize
 
+                jsonString = File.ReadAllText(TextBlock_FilePathJson.Text);
 
-                jsonString = File.ReadAllText(openFileDialog.FileName);
-
-                TextBox_JsonPath.Text = openFileDialog.FileName;
+                TextBox_JsonPath.Text = TextBlock_FilePathJson.Text;
 
                 IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
@@ -388,7 +382,7 @@ namespace Jiracoll
 
                 // baue dictionary mit status/zeitpaaren
                 issuesCount = JsonContent.issues.Count;
-
+                
                 foreach (IssuePOCO issue in JsonContent.issues)
                 {
                     String resultLine = "";
@@ -405,7 +399,6 @@ namespace Jiracoll
                         {
                             resultLine += item.name + "|";
                         }
-
                         resultLine += ",";
                     }
                    
@@ -421,7 +414,6 @@ namespace Jiracoll
                         {
                              firstName = status.Name;
                         }
-
                     }
 
                     List<StatusRich> statusRichList = new List<StatusRich>();               
@@ -446,9 +438,7 @@ namespace Jiracoll
 
                     // kein Statuswechsel in History ==> immer noch im initialen Status
                      if (statusRichList.Count < 1)
-                    {
-                        
-                        
+                    {                                                
                         DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
                         TimeSpan ts = currentDate - issue.fields.created;
                         int minutes = (int)ts.TotalMinutes;
@@ -472,20 +462,7 @@ namespace Jiracoll
                             FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                         }
                         
-                        // wenn nur EIN Status => immer noch im Ursprungsstatus. Vergangene Zeit daher 
-                        // Zeitpunkt der Erhebung - Zeitpunkt der Erstellung des Tickets
-                        //if(statusRichList.Count < 2)
-                        //{
-                        //    last = new DateTime(2020, 12, 16, 23, 59, 00);
-                        //}
-                        //else
-                        //{
-                        //    last = statusRichList.Max(obj => obj.TimeStamp);
-                        //}
-
-                        // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")
-                        
-                        
+                        // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
                         last = new DateTime(2020, 12, 17, 12, 29, 00);
                         // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                         foreach (StatusRich statusTrans in statusRichList)
@@ -496,6 +473,7 @@ namespace Jiracoll
                             string statusName = "";
                             if (!(dict.ContainsKey(statusTrans.Name)))
                             {
+                                statusName = statusTrans.Name;
                                 foreach(WorkflowStep step in statuses)
                                 {
                                     if (step.Aliases.Contains(statusTrans.Name))
@@ -513,16 +491,22 @@ namespace Jiracoll
                                 DoneDate = statusTrans.TimeStamp;
                                 foundDate = true;
                             }
+                            if (!dict.ContainsKey(statusName))
+                            {
+                                dict.Add(statusName, 0);
+                                if (!notFoundStep.Contains(statusName))
+                                {
+                                    notFoundStep.Add(statusName);
+                                }
+                            }
                             dict[statusName] += statusTrans.Minutes;
                         }                      
                     }
-                   
-                               
+                                                  
                     foreach (KeyValuePair<string, int> pair in dict)
                     {
                         resultLine += pair.Value + ",";
                     }
-
 
                     if (FirstDate.Equals(new DateTime()))
                     {                     
@@ -546,7 +530,6 @@ namespace Jiracoll
                         resultLine += CloseDate.ToString() + ","; 
                     }
                    
-
                     csvFileContent += resultLine + System.Environment.NewLine;
                     
                     Console.WriteLine(resultLine);
@@ -555,16 +538,28 @@ namespace Jiracoll
                 }
 
             }
-
-
-
-            Console.WriteLine("Ausgabe:    " + jsonString);
+            
+            TextBox_Errors.Text += "\n<< additional Statuses found >> \n";
+            foreach (String s in notFoundStep)
+            {                
+                TextBox_Errors.Text += s + " \n";
+            }
+            
             File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
         }
 
         private void ProgressBar_Historie_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
+        }
+
+        private void Button_JsonFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "json File (*.json|*.json|All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+                    TextBlock_FilePathJson.Text = openFileDialog.FileName;
         }
     }
 }
