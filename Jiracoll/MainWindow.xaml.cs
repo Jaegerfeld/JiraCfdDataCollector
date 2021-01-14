@@ -28,6 +28,7 @@ namespace Jiracoll
         {
             InitializeComponent();
             TextBlock_Filepath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test1234.csv";
+            DatePicker_DateOfFile.SelectedDate = DateTime.Now;
         }
         // Aufbau CFD CSV mit API Call
         private async void Button_ReadFromAPI(object sender, RoutedEventArgs e)
@@ -435,11 +436,12 @@ namespace Jiracoll
                     DateTime DoneDate = new DateTime();
                     // umsortieren letzter zuerst, desc
                     statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
-
+                    DateTime currentDate = (DateTime)DatePicker_DateOfFile.SelectedDate;
                     // kein Statuswechsel in History ==> immer noch im initialen Status
-                     if (statusRichList.Count < 1)
+                    if (statusRichList.Count < 1)
                     {                                                
-                        DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
+                        //DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
+                       
                         TimeSpan ts = currentDate - issue.fields.created;
                         int minutes = (int)ts.TotalMinutes;
                                                
@@ -461,9 +463,9 @@ namespace Jiracoll
                         {
                             FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                         }
-                        
+
                         // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
-                        last = new DateTime(2020, 12, 17, 12, 29, 00);
+                        last = currentDate ;
                         // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                         foreach (StatusRich statusTrans in statusRichList)
                         {                           
