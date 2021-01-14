@@ -15,6 +15,7 @@ namespace Jiracoll
         Boolean last = false;
         Boolean createState = false;
         Boolean doneState = false;
+        DateTime timeStamp = new DateTime();
 
         public WorkflowStep() { }
         public WorkflowStep(string name, string mapTarget)
@@ -32,6 +33,7 @@ namespace Jiracoll
         public List<string> Aliases { get => aliases; set => aliases = value; }
         public bool CreateState { get => createState; set => createState = value; }
         public bool DoneState { get => doneState; set => doneState = value; }
+        public DateTime TimeStamp { get => timeStamp; set => timeStamp = value; }
     }
 
 }

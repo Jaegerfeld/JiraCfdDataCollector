@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+Jiracoll/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+.vs/Jiracoll/v16/.suo

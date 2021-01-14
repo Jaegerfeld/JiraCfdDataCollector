@@ -67,6 +67,7 @@
     </ApplicationDefinition>
     <Compile Include="IssueComponentsItemPOCO.cs" />
     <Compile Include="IssueComponentsPOCO.cs" />
+    <Compile Include="StatusHistoryPOCO.cs" />
     <Compile Include="StatusRich.cs" />
     <Compile Include="WorkflowStep.cs" />
     <Page Include="MainWindow.xaml">
