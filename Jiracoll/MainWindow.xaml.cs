@@ -136,6 +136,9 @@ namespace Jiracoll
             File.WriteAllText(saveFileDialog.FileName, "");
         }
 
+
+
+
         /* Definition des Workflows
         pro Zeile ein Workflow, Reihenfolge vertikal ist die Reihgenfolge im Export csv horizontal
         deprecated Status können auf aktuelle gemappt werden. Führender Status ist der aktuellöe auf den gemappt wird.
@@ -232,8 +235,7 @@ namespace Jiracoll
 
         // Auswahl der einzulesenden Json Datei
         private void Button_CfdFromJson_Click(object sender, RoutedEventArgs e)
-        {
-           
+        {           
 
             //string jsonString ="";
             //int counter = 0; // Verlaufsbalken Zähler
@@ -331,6 +333,9 @@ namespace Jiracoll
             //File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
 
         }
+        
+        
+        
         /* Aufbau einer Tabelle: pro gefundenem Issue aufsummiert alle Zeiten pro Status in Minuten.
         e.g.   To Do  | In Progress | In Test
                500    |   876       |  456
@@ -361,7 +366,7 @@ namespace Jiracoll
 
                 csvFileContent = "";
 
-                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component,";
+                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component,Resolution,";
                                 
                List<WorkflowStep> statuses = getWorkflowFromFile();
 
@@ -400,9 +405,17 @@ namespace Jiracoll
                         {
                             resultLine += item.name + "|";
                         }
-                        resultLine += ",";
+                        
                     }
-                   
+                    resultLine += ",";
+
+                    if (issue.fields.resolution != null)
+                    {
+                        resultLine += issue.fields.resolution.name;
+                    }
+                    resultLine += ",";
+
+
                     Dictionary<string, int> dict = new Dictionary<string, int>();
                     foreach(WorkflowStep status in statuses)
                     {
@@ -562,6 +575,11 @@ namespace Jiracoll
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (openFileDialog.ShowDialog() == true)
                     TextBlock_FilePathJson.Text = openFileDialog.FileName;
+        }
+
+             private void Button_workflowHistory_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

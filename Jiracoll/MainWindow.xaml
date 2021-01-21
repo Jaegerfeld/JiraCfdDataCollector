@@ -31,6 +31,7 @@
                     <TextBox x:Name="TextBox_Errors" Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Left" Height="233" Margin="202,0,0,0" TextWrapping="Wrap" Text="&lt;found Errors&gt;" VerticalAlignment="Top" Width="313"/>
                     <ScrollBar Grid.Column="3" HorizontalAlignment="Left" Margin="108,10,-7,0" VerticalAlignment="Top" Width="33" Height="223"/>
                     <DatePicker x:Name="DatePicker_DateOfFile" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsDropDownOpen="True" SelectedDateFormat="Long"/>
+                    <Button x:Name="Button_workflowHistory" Grid.ColumnSpan="2" Content="Export Status History" Grid.Column="2" HorizontalAlignment="Left" Margin="298,332,0,0" VerticalAlignment="Top" Width="195" Height="57" FontSize="16" FontFamily="Lucida Bright" Background="#FF8ECDFF" Foreground="Black" BorderBrush="#FF996767" Click="Button_workflowHistory_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="API">

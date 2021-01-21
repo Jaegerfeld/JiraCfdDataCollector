@@ -80,11 +80,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="IssueComponentsItemPOCO.cs" />
-    <Compile Include="IssueComponentsPOCO.cs" />
-    <Compile Include="StatusHistoryPOCO.cs" />
-    <Compile Include="StatusRich.cs" />
-    <Compile Include="WorkflowStep.cs" />
+    <Compile Include="POCOS\IssueComponentsItemPOCO.cs" />
+    <Compile Include="POCOS\IssueComponentsPOCO.cs" />
+    <Compile Include="POCOS\IssueResolutionPOCO.cs" />
+    <Compile Include="POCOS\StatusHistoryPOCO.cs" />
+    <Compile Include="POCOS\StatusRich.cs" />
+    <Compile Include="POCOS\WorkflowStep.cs" />
+    <Compile Include="WorkflowExtraxtor.cs" />
+    <Compile Include="WorkflowHistory\WorkflowhistoryExport.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,13 +96,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChangelogPOCO.cs" />
-    <Compile Include="IssueFieldsPOCO.cs" />
-    <Compile Include="IssueHistoryPOCO.cs" />
-    <Compile Include="IssuePOCO.cs" />
-    <Compile Include="IssuesPOCO.cs" />
-    <Compile Include="IssueStatusPOCO.cs" />
-    <Compile Include="IssueTypePOCO.cs" />
+    <Compile Include="POCOS\ChangelogPOCO.cs" />
+    <Compile Include="POCOS\IssueFieldsPOCO.cs" />
+    <Compile Include="POCOS\IssueHistoryPOCO.cs" />
+    <Compile Include="POCOS\IssuePOCO.cs" />
+    <Compile Include="POCOS\IssuesPOCO.cs" />
+    <Compile Include="POCOS\IssueStatusPOCO.cs" />
+    <Compile Include="POCOS\IssueTypePOCO.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
