@@ -27,7 +27,7 @@ namespace Jiracoll
         }
 
 
-        private List<WorkflowStep> getWorkflowFromFile()
+        public List<WorkflowStep> getWorkflowFromFile(string pathOfWorkflow)
         {
             List<WorkflowStep> returnList = new List<WorkflowStep>();
 
@@ -35,7 +35,9 @@ namespace Jiracoll
             int counter = 0;
             string line;
             //  string path = Directory.GetCurrentDirectory();
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
+            // string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
+
+            string path = pathOfWorkflow;
 
             // Read the file and display it line by line.  
             System.IO.StreamReader file =

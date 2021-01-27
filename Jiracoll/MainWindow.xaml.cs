@@ -28,6 +28,7 @@ namespace Jiracoll
         {
             InitializeComponent();
             TextBlock_Filepath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test1234.csv";
+            TextBlock_WorkflowFilePath.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
             DatePicker_DateOfFile.SelectedDate = DateTime.Now;
         }
         // Aufbau CFD CSV mit API Call
@@ -137,101 +138,6 @@ namespace Jiracoll
         }
 
 
-
-
-        /* Definition des Workflows
-        pro Zeile ein Workflow, Reihenfolge vertikal ist die Reihgenfolge im Export csv horizontal
-        deprecated Status können auf aktuelle gemappt werden. Führender Status ist der aktuellöe auf den gemappt wird.
-        Trennzeichen :
-        e.g. 
-        To Do:Open
-        Für die messung der T2M kann ein Start und End Status angegeben werden
-        e.g. 
-        <First>Open
-        <Last>Completed*/
-        private List<WorkflowStep> getWorkflowFromFile()
-        {
-            List<WorkflowStep> returnList = new List<WorkflowStep>();
-           
-            
-            int counter = 0;
-            string line;
-          //  string path = Directory.GetCurrentDirectory();
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
-          
-            // Read the file and display it line by line.  
-            System.IO.StreamReader file =
-                new System.IO.StreamReader(path);
-            
-            while ((line = file.ReadLine()) != null)
-            {
-                System.Console.WriteLine(line);
-
-                if (line.Contains("<First>"))
-                {
-                    string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).First = true;
-                }
-
-                else if (line.Contains("<Last>"))
-                {
-                    string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).Last = true;               
-                }
-
-                else if (line.Contains("<Create>"))
-                {
-                    string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).CreateState = true;
-                }
-
-                else
-                {
-                    if (line.Contains(":"))
-                    {
-                        int index = 0;
-                        string[] statusArray = line.Split(':');
-                        string mainStatus = statusArray[0];
-
-                        // first Entry == current Status
-                        WorkflowStep status = new WorkflowStep(statusArray[0].Trim(), statusArray[0].Trim());
-
-                        // Entry 2+ == mapped deprecated status
-                        for (int i = index; i < statusArray.Length; i++)
-                        {
-                            status.Aliases.Add(statusArray[i].Trim());                            
-                        }
-                        returnList.Add(status);
-
-                    }
-                    else
-                    {
-                        returnList.Add(new WorkflowStep(line.Trim(), line.Trim()));
-                    }
-
-                }
-
-                counter++;
-            }
-            Boolean ended = false; 
-
-            foreach(WorkflowStep step in returnList)
-            {
-
-                if (step.Last)
-                {
-                    ended = true;
-                }
-                if (ended)
-                {
-                    step.DoneState = true;
-                }
-            }
-
-            file.Close();
-
-            return returnList;
-        }
 
         // Auswahl der einzulesenden Json Datei
         private void Button_CfdFromJson_Click(object sender, RoutedEventArgs e)
@@ -350,7 +256,7 @@ namespace Jiracoll
             int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
 
             String csvFileContent = "";
-
+            WorkflowExtraxtor wfex = new WorkflowExtraxtor();
             IssueChangeLog issueChangelog = new IssueChangeLog();
             List<String> notFoundStep = new List<String>();
 
@@ -366,9 +272,9 @@ namespace Jiracoll
 
                 csvFileContent = "";
 
-                csvFileContent += "Key,Issuetype,Current Status,Created Date,Component,Resolution,";
+                csvFileContent += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
                                 
-               List<WorkflowStep> statuses = getWorkflowFromFile();
+               List<WorkflowStep> statuses = wfex.getWorkflowFromFile(TextBlock_WorkflowFilePath.Text);
 
                 List<string> doneStatesList = new List<string>();
 
@@ -382,7 +288,7 @@ namespace Jiracoll
                     }        
                 }
 
-                csvFileContent += "First Date,Closed Date,";
+                csvFileContent += "First Date,Closed Date";
 
                 csvFileContent += System.Environment.NewLine;
 
@@ -394,10 +300,11 @@ namespace Jiracoll
                     String resultLine = "";
                     string lastName = "";
                     string firstName = "";
+                    string group = "";
                     Boolean foundDate = false;
                     // json convert anpassen auf issuetype "Fields hinzufügen"
 
-                    resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
+                    resultLine += group + "," + issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
                     if(issue.fields.components != null)
                     {
@@ -538,11 +445,11 @@ namespace Jiracoll
                         {
                             resultLine += DoneDate.ToString() + ",";
                         }
-                        resultLine += ",";
+                        /*resultLine += ",";*/
                     }
                     else
                     {
-                        resultLine += CloseDate.ToString() + ","; 
+                        resultLine += CloseDate.ToString() ; 
                     }
                    
                     csvFileContent += resultLine + System.Environment.NewLine;
@@ -580,6 +487,15 @@ namespace Jiracoll
              private void Button_workflowHistory_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_SelectWorkflowFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "txt File (*.txt|*.txt|All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+                TextBlock_WorkflowFilePath.Text = openFileDialog.FileName;
         }
     }
 }
