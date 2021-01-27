@@ -4,7 +4,7 @@ from Jira Project to Scatterplot/Boxplot/CFD
 
 small leadTime reporting tool.
 
-Collects the "Time in Status" for every single Issue in a given json / from Jira Rast API
+Collects the "Time in Status" for every single Issue in a given json / from Jira Rest API
 
 1. Prepares Data for Boxplots etc. 
   one line per issue with the time per status
