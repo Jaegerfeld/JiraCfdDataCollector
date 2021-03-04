@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jiracoll.ReportBuilder;
 
 namespace Jiracoll
 {
@@ -141,102 +142,14 @@ namespace Jiracoll
 
         // Auswahl der einzulesenden Json Datei
         private void Button_CfdFromJson_Click(object sender, RoutedEventArgs e)
-        {           
+        {
 
-            //string jsonString ="";
-            //int counter = 0; // Verlaufsbalken Zähler
-          
-            //int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
-
-            //String csvFileContent = "";
-
-           
-            //IssueChangeLog issueChangelog = new IssueChangeLog();
-
-
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-            //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //    // get json & deserialize
-
-
-            //    jsonString = File.ReadAllText(openFileDialog.FileName);
-
-            //    TextBox_JsonPath.Text = openFileDialog.FileName;
-
-            //   IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
-
-
-
-            //    csvFileContent = "";
-
-            //    csvFileContent += "Key,Issuetype,Current Status,Created Date,";
-
-            //   List<WorkflowStep> s = getWorkflowFromFile();
-
-            //    //string[] s = new string[] { "To Do", "Vorbereitung - Durchführung", "Done", "Abgerechnet", "Fristgerecht storniert", "Storno durch P3", "Nicht fristgerecht storniert" };
-
-
-
-            //    foreach (WorkflowStep item in s)
-            //    {
-            //        csvFileContent += item.Name + ",";
-            //    }
-            //    csvFileContent += System.Environment.NewLine;
-
-
-
-            //    // baue dictionary mit status/zeitpaaren
-
-            //    issuesCount = JsonContent.issues.Count;
-
-            //    foreach (IssuePOCO issue in JsonContent.issues)
-            //    {
-
-
-            //        String resultLine = "";
-            //        // json convert anpassen auf issuetype "Fields hinzufügen"
-            //        //resultLine += issue.key + "," + issue.type + "," + issue.status + "," + i.Created + ",";
-            //        resultLine += issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
-
-            //        Dictionary<WorkflowStep, string> dict = new Dictionary<WorkflowStep, string>();
-            //        foreach (WorkflowStep issueStatus in s)
-            //        {
-            //            dict.Add(issueStatus, "");
-            //        }
-
-            //        foreach (IssueHistoryPOCO history in issue.changelog.histories)
-            //        {
-            //            foreach (IssueChangeLogItem item in history.items)
-            //            {
-            //                if (item.FieldName.Equals("status"))
-            //                {
-            //                    dict[item.ToValue] = history.created.ToString();
-
-            //                }
-            //            }
-            //        }
-
-            //        foreach (KeyValuePair<string, string> pair in dict)
-            //        {
-            //            resultLine += pair.Value + ",";
-            //        }
-
-            //        csvFileContent += resultLine + System.Environment.NewLine;
-            //        Console.WriteLine(resultLine);
-            //        counter++;
-            //        ProgressBar_Historie.Value = 100 / issuesCount * counter;
-            //    }
-                
-
-            //}
-
+            CFDDataFileBuilder builder = new CFDDataFileBuilder();
+            string workflowPath = TextBlock_WorkflowFilePath.Text;
+            string jsonpath = TextBlock_FilePathJson.Text;
+            DateTime timestamp = (DateTime)DatePicker_DateOfFile.SelectedDate;
             
-
-            //Console.WriteLine("Ausgabe:    " +jsonString);
-            //File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
+            builder.buildCFDDataFile(workflowPath, jsonpath, timestamp);
 
         }
         
@@ -365,7 +278,7 @@ namespace Jiracoll
                         TimeSpan ts = currentDate - issue.fields.created;
                         int minutes = (int)ts.TotalMinutes;
                                                
-                        resultLine += minutes + ",";
+                        resultLine += minutes + ",,,,,,,,";
                     }
                     // sonst Status gefunden, wenn  nicht: immer noch open
                     else
@@ -422,15 +335,17 @@ namespace Jiracoll
                                 }
                             }
                             dict[statusName] += statusTrans.Minutes;
-                        }                      
+                            
+                        }
+                        foreach (KeyValuePair<string, int> pair in dict)
+                        {
+                            resultLine += pair.Value + ",";
+                        }
                     }
                                                   
-                    foreach (KeyValuePair<string, int> pair in dict)
-                    {
-                        resultLine += pair.Value + ",";
-                    }
+                    
 
-                    if (FirstDate.Equals(new DateTime()))
+                    if (FirstDate.Equals(new DateTime()))                     
                     {                     
                             resultLine += ",";
                     }
@@ -472,7 +387,6 @@ namespace Jiracoll
 
         private void ProgressBar_Historie_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
         }
 
         private void Button_JsonFile_Click(object sender, RoutedEventArgs e)
